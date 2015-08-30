@@ -1,27 +1,32 @@
 (ns seminarski.db
   
-  (:require [monger.core :as mo]))
+  (:require [monger.core :as mo]
+            [monger.collection :as mcol]))
   
 
-(def connection (mg/connect {:host "127.0.0.1" :port 27017}))
+(def connection (mo/connect {:host "127.0.0.1" :port 27017}))
 
-(def db (mg/get-db connection "database"))
+(def db (mo/get-db connection "moviedatabase"))
 
 (defn insert [col doc] 
-  (mo/insert db col doc)                
+  (mcol/insert db col doc)                
 )    
 
 (defn insert-batch [col docs] 
-  (mo/insert-batch db col docs)                
+  (mcol/insert-batch db col docs)                
 )  
   
 (defn get-data [col condition] 
   (if(nil? condition)
-    (mo/find-maps db col) 
-    (mo/find-maps db col condition))                               
+    (mcol/find-maps db col) 
+    (mcol/find-maps db col condition))                               
 )
  
 (defn isempty [col] 
-  (mo/empty? db col)
+  (mcol/empty? db col)
+)
+
+(defn disconnect []
+  (mo/disconnect connection)
 )
 
