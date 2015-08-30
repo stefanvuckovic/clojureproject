@@ -11,11 +11,11 @@
   (mo/insert db col doc)                
 )    
 
-(defn insertbatch [col docs] 
+(defn insert-batch [col docs] 
   (mo/insert-batch db col docs)                
 )  
   
-(defn select [col condition] 
+(defn get-data [col condition] 
   (if(nil? condition)
     (mo/find-maps db col) 
     (mo/find-maps db col condition))                               
