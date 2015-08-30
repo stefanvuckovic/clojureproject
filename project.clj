@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.6.0"] 
                  [com.novemberain/monger "3.0.0-rc2"]
                  [clj-http "2.0.0"]
-                 [cheshire "5.5.0"]])
+                 [cheshire "5.5.0"]
+                 [http-kit "2.1.19"]])
