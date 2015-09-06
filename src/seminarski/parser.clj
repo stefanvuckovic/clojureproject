@@ -42,6 +42,53 @@
 )
 
 
+(defn get-moviecast-data [cast]
+  (vec (doall (map #(select-keys % [:name :imdb_code]) cast)))
+)
+
+(defn get-parsed-movie [movie]
+  {:_id (:id movie)
+   :imdb_code (:imdb_code movie)
+   :title (:title_long movie)
+   :year (:year movie)
+   :imdb_rating (:rating movie)
+   :genres (:genres movie)
+   :yt_trailer_code (:yt_trailer_code movie)
+   :description (:description_full movie)
+   :directors (get-moviecast-data (:directors movie))
+   :actors (get-moviecast-data (:actors movie))
+   }
+)
+
+
+(defn get-processed-movies [movies]
+  (loop [mv movies mvfrompage []]
+    (if (empty? mv)
+      mvfrompage
+      (let [mvfp (get-parsed-movie(json-parse (get-movie-details (first mv)) (get-movie-details-json-tag)))]
+        (if-not (nil? mvfp)
+          (recur (rest mv) (conj mvfrompage mvfp))
+          (recur (rest mv) mvfrompage)))))
+)
+
+(defn get-movies []
+  (loop [page 1 movies []]
+    (let [moviesfrompage (json-parse (get-movies-from-page page) (get-movies-json-tag))]
+      (if-not (nil? moviesfrompage)
+        (if (empty? moviesfrompage)
+          (do 
+            (println "EMPTY")
+            movies)
+          (do
+          
+          (recur (inc page) (into movies (get-processed-movies moviesfrompage)))))
+        (recur (inc page) movies))))
+)
+
+
+
+
+
 
 
 
