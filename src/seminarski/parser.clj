@@ -1,7 +1,6 @@
 (ns seminarski.parser
   (:require [seminarski.getdatafromurl :as gd]
-            [cheshire.core :refer :all :as ch]
-            [clojure.java.io :as wr]))
+            [cheshire.core :refer :all :as ch]))
 
 (defn get-url-listmoviesapi [] 
   (str "https://yts.to/api/v2/list_movies.json")
@@ -15,19 +14,22 @@
   (str "https://yts.to/api/v2/movie_details.json")
 )
 
+
 (defn get-movies-json-tag []
-  [[:data :movies] []]
+  [:data :movies]
 )
+
 
 (defn get-movie-details-json-tag []
-  [[:data] {}]
+  [:data]
 )
 
-(defn json-parse [data [json-tag col]] 
- (let [mv (ch/parse-string data true)]
-   (if(= (:status mv) "ok")
-      (get-in mv json-tag) 
-       col))
+
+(defn json-parse [data json-tag]
+  (if-not (= data nil)
+    (let [mv (ch/parse-string data true)]
+      (if(= (:status mv) "ok")
+        (get-in mv json-tag))))
 )
 
 (defn get-movies-from-page [page] 
@@ -38,7 +40,9 @@
 
 
 (defn get-movie-details [movie]
-  (gd/get-data (get-url-moviedetailsapi) {"movie_id" (:id movie), "with_cast" "true"})  
+  (do
+    (println (str (get-url-moviedetailsapi) (:id movie)))
+    (gd/get-data (get-url-moviedetailsapi) {"movie_id" (:id movie), "with_cast" "true"}))  
 )
 
 
@@ -65,9 +69,9 @@
   (loop [mv movies mvfrompage []]
     (if (empty? mv)
       mvfrompage
-      (let [mvfp (get-parsed-movie(json-parse (get-movie-details (first mv)) (get-movie-details-json-tag)))]
+      (let [mvfp (json-parse (get-movie-details (first mv)) (get-movie-details-json-tag))]
         (if-not (nil? mvfp)
-          (recur (rest mv) (conj mvfrompage mvfp))
+          (recur (rest mv) (conj mvfrompage (get-parsed-movie mvfp)))
           (recur (rest mv) mvfrompage)))))
 )
 
@@ -79,7 +83,9 @@
           (do 
             (println "EMPTY")
             movies)
-          (recur (inc page) (into movies (get-processed-movies moviesfrompage))))
+          (do 
+            (println moviesfrompage)
+          (recur (inc page) (into movies (get-processed-movies moviesfrompage)))))
         (recur (inc page) movies))))
 )
 
