@@ -29,6 +29,10 @@
     (mquery/paginate :page page :per-page limit)) 
 )
 
+(defn get-by-id [col id]  
+  (mcol/find-map-by-id db col (Integer/parseInt id))
+)
+
 (defn delete-data [col & {:keys [condition] :or {condition {}}}]
   (mcol/remove db col condition)
 )
