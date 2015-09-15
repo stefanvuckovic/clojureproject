@@ -7,4 +7,8 @@
                  [com.novemberain/monger "3.0.0-rc2"]
                  [clj-http "2.0.0"]
                  [cheshire "5.5.0"]
-                 [http-kit "2.1.19"]])
+                 [http-kit "2.1.19"]
+                 [compojure "1.4.0"]
+                 [hiccup "1.0.5"]]
+  :plugins [[lein-ring "0.9.6"]]
+  :ring {:handler seminarski.handler/app})
