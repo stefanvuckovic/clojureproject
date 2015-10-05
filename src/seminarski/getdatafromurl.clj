@@ -10,8 +10,7 @@
     (catch Exception e
       (do
         (Thread/sleep 300)
-        (.printStackTrace e))))
-)
+        (.printStackTrace e)))))
 
 (defn get-data [url, params]
   (try
@@ -21,5 +20,4 @@
           nil
           body)))
     (catch Exception e
-      (.printStackTrace e)))
-)
+      (.printStackTrace e))))
