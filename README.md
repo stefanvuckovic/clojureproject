@@ -1,8 +1,8 @@
-semanticwebapp
+movierecommenderapp
 ==============
+<div class="align-justify">
 #1. About project
-Topic of this project is developing of a web application for searching and recommendation of movies. Movie data needs to be downloaded
-from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database. 
+Topic of this project is developing of a web application for searching and recommendation of movies. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database. 
 Main application development phases:
 * downloading data from available API-s or directly from web pages
 * storing data in a local database
@@ -11,8 +11,7 @@ Main application development phases:
 * implementation of a user interface for movie searching and displaying recommendations
 
 #2. Domain model
-After analyzing the data provided by the selected data sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )) and 
-needed data for performing recommendation proposed structure of the data that is downloaded and stored is:
+After analyzing the data provided by the selected data sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )) and needed data for performing recommendation proposed structure of the data that is downloaded and stored is:
 
 Movie
 * movie id
@@ -27,35 +26,29 @@ Movie
 * movie reviews 
 * similar movies - after applying algorithm for computation similarities between movies, store 10 most similar
 
-#3. Rešenje
+#3. Solution
 Application is using data from two different sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )), data is then integrated and stored
 in a MongoDB database. 
 
 [YTS]( https://yts.to/api/ ) API provides all needed data except movie reviews data. 
-Because of that, imdb code of movies is downloaded so it can be used for searching for reviews directly on IMDB site. 
-Data is in JSON format where maximum number of movies that can be downloaded at once is 50 so API needs to be called in iterations. 
-For every movie (of 50 downloaded) another API should be called with movie details we need for our purposes.
-When it comes to directors and actors data, besides name, imdb_code is downloaded for every person so it could be uniquely identified.
-That is important because actor and director data is used for computing recommendations.
+Because of that, imdb code of movies is downloaded so it can be used for searching for reviews directly on IMDB site. Data is in JSON format where maximum number of movies that can be downloaded at once is 50 so API needs to be called in iterations. 
+For every movie (of 50 downloaded) another API should be called with movie details we need for our purposes. When it comes to directors and actors data, besides name, imdb_code is downloaded for every person so it could be uniquely identified. That is important because actor and director data is used for computing recommendations.
 
-[IMDB]( http://www.imdb.com/ ) site is used for downloading movie reviews to be used for computing recommendations.
-Since there is no corresponding API available, data is downloaded directly from the IMDB pages.
-IMDB Code is used for integration of existing data and downloaded reviews.
+[IMDB]( http://www.imdb.com/ ) site is used for downloading movie reviews to be used for computing recommendations. Since there is no corresponding API available, data is downloaded directly from the IMDB pages. IMDB Code is used for integration of existing data and downloaded reviews.
 
 Also, application provides the user interface for movie search and displaying movie details as well as recommendations.
 
 1. User comes to the application start page.
-![Slika 2](SemanticWebApp/images/pocetna.jpg)
+![Slika 2](SemanticWebApp/images/startpage.jpg)
 2. User enters title (or just part of the title) in search field.
 Pagination is implemented so movies don't need to be loaded in memory at once.
-![Slika 3](SemanticWebApp/images/unospretraga.jpg)
+![Slika 3](SemanticWebApp/images/searchresults.jpg)
 3. Search results are showed to user and he can choose to see movie details for desired movie. Besides movie details, 
 top 10 recommended movies for particular movie are showed on movie details page.
-![Slika 4](SemanticWebApp/images/rezultatpretrage.jpg)
+![Slika 4](resources/public/images/details.jpg)
 
 #4. Recommendation algorithm
-For recommendation purposes, movie attributes were used, so content based recommendation is implemented. Vector Space Model
-approach is used for calculating similarities between movies. Vector Space Model represents text document as vectors of identifiers,
+For recommendation purposes, movie attributes were used, so content based recommendation is implemented. Vector Space Model approach is used for calculating similarities between movies. Vector Space Model represents text document as vectors of identifiers,
 in this specific case, these vectors are vectors of terms. Each dimension in a vector corresponds to a separate term. For every term
 in a document vector, there is a value assigned. These values (term weights) can be computed in several ways and approach that is chosen
 here is TF-IDF method. 
@@ -65,8 +58,7 @@ In first iteration, just movie description is used for computing.
 There is preprocessing that needs to be done on description before computing TF-IDF:
 * transform whole text to lowercase
 * tokenize description
-* remove stop-words from the list of tokens - stop words are the words that occurs the most often but they do not carry any 
-semantic information so they are removed
+* remove stop-words from the list of tokens - stop words are the words that occurs the most often but they do not carry any semantic information so they are removed
 * stemming is applied for every token - in order to reduce tokens to their root, base form and avoid that word derivations (for example plural) 
 are treated as different words. For this purpose, Porter stemming algorithm is used.
 
@@ -85,8 +77,7 @@ In next iteration, it was decided to include movie title, actors, directors and 
 done here, because just including title tokens, actors and other attributes with frequency 1 didn't make any sense. So, weight factors are used for these
 attributes and applied on number of terms in a document (movie description). This allows movie attributes to contribute equally in every movie. 
 ```
-So lets say that after preprocessing is done, there are 50 terms extracted from movie description (not different terms but 
-summed frequencies of terms). If we decide that we want to use factor of 0.05 for actors, each actor will be added to the list
+So lets say that after preprocessing is done, there are 50 terms extracted from movie description (not different terms but summed frequencies of terms). If we decide that we want to use factor of 0.05 for actors, each actor will be added to the list
 of tokens for a movie with frequency = 50 * 0.05. 
 ```
 
@@ -126,12 +117,10 @@ IMDB pages.
 3. [Cheshire] (https://github.com/dakrone/cheshire) - Cheshire is used for parsing JSON data received from API.
 
 4. [Ring] (https://github.com/ring-clojure/ring) is a Clojure library for developing web applications. 
-Ring abstracts details of HTTP into a simple, unified API, allowing web applications to be constructed of modular 
-components that can be shared among a variety of applications, web servers, and web frameworks. Ring uses standard Clojure 
+Ring abstracts details of HTTP into a simple, unified API, allowing web applications to be constructed of modular components that can be shared among a variety of applications, web servers, and web frameworks. Ring uses standard Clojure 
 maps to represent the client requests and the responses returned by the server.
 
-5. [Compojure] (https://github.com/weavejester/compojure) - Compojure is a routing library built on top of Ring. It is
-built on top of Ring and provides an easy way for defining web application routes.
+5. [Compojure] (https://github.com/weavejester/compojure) - Compojure is a routing library built on top of Ring. It is built on top of Ring and provides an easy way for defining web application routes.
 
 6. [Monger] (http://clojuremongodb.info/) - a library for accessing MongoDB database. 
 MongoDB is a document oriented database that provides high performance and flexible schema. It maps nicely to Clojure data structures.
@@ -158,12 +147,9 @@ Configuration files looks like this:
 }
 
 Info element states what options are available for movies and similarities element. 
-If you choose option 1, when application starts movies (or similarities or both) will be imported from file which 
-is populated with data already downloaded and/or computed for you. Using option 2 for movies element means that movies 
-will be downloaded from API when you start application. This is maybe something you don't want to do, because it is a 
-long running process. 
-Using option 2 with similarities element mean that recommendation algorithm will be applied when you start application 
-and this is a very memory and time consuming process. 
+If you choose option 1, when application starts movies (or similarities or both) will be imported from file which is populated with data already downloaded and/or computed for you. Using option 2 for movies element means that movies 
+will be downloaded from API when you start application. This is maybe something you don't want to do, because it is a long running process. 
+Using option 2 with similarities element mean that recommendation algorithm will be applied when you start application and this is a very memory and time consuming process. 
 Option 3 with both movies and similarities means that you want to use your local database that is already populated before. 
 You will probably want to set option 1 for both elements on first launch of an application. Data will then be imported
 from files to your database. After that, you should set option 3 for both elements so on every further launch data from 
@@ -189,3 +175,4 @@ to reduce dimensions of a matrix, calculate similarities faster which is a big p
 
 #8. Licence
 Distributed under the Eclipse Public License, the same as Clojure.
+</div>
