@@ -1,6 +1,6 @@
 movierecommenderapp
 ==============
-<div class="align-justify">
+
 #1. About project
 Topic of this project is developing of a web application for searching and recommendation of movies. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database. 
 Main application development phases:
@@ -175,4 +175,3 @@ to reduce dimensions of a matrix, calculate similarities faster which is a big p
 
 #8. Licence
 Distributed under the Eclipse Public License, the same as Clojure.
-</div>
