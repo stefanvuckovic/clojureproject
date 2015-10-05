@@ -2,7 +2,7 @@ movierecommenderapp
 ==============
 
 #1. About project
-Topic of this project is developing of a web application for searching and recommendation of movies. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database. 
+Topic of this project is developing of a web application for searching and recommendation of movies. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database.
 Main application development phases:
 * downloading data from available API-s or directly from web pages
 * storing data in a local database
@@ -39,10 +39,10 @@ For every movie (of 50 downloaded) another API should be called with movie detai
 Also, application provides the user interface for movie search and displaying movie details as well as recommendations.
 
 1. User comes to the application start page.
-![Slika 2](SemanticWebApp/images/startpage.jpg)
+![Slika 2](resources/public/images/startpage.jpg)
 2. User enters title (or just part of the title) in search field.
 Pagination is implemented so movies don't need to be loaded in memory at once.
-![Slika 3](SemanticWebApp/images/searchresults.jpg)
+![Slika 3](resources/public/images/searchresults.jpg)
 3. Search results are showed to user and he can choose to see movie details for desired movie. Besides movie details, 
 top 10 recommended movies for particular movie are showed on movie details page.
 ![Slika 4](resources/public/images/details.jpg)
