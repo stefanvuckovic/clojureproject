@@ -2,7 +2,11 @@ movierecommenderapp
 ==============
 
 #1. About project
+<<<<<<< HEAD
 Topic of this project is developing of a web application for searching and recommendation of movies. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database.
+=======
+<div class="align-justify">Topic of this project is developing of a web application for searching and recommendation of movies. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database.</div>
+>>>>>>> 7ca52035cbed6b49bd865814bff4d756f66abdba
 Main application development phases:
 * downloading data from available API-s or directly from web pages
 * storing data in a local database
@@ -27,8 +31,7 @@ Movie
 * similar movies - after applying algorithm for computation similarities between movies, store 10 most similar
 
 #3. Solution
-Application is using data from two different sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )), data is then integrated and stored
-in a MongoDB database. 
+Application is using data from two different sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )), data is then integrated and stored in a MongoDB database. 
 
 [YTS]( https://yts.to/api/ ) API provides all needed data except movie reviews data. 
 Because of that, imdb code of movies is downloaded so it can be used for searching for reviews directly on IMDB site. Data is in JSON format where maximum number of movies that can be downloaded at once is 50 so API needs to be called in iterations. 
