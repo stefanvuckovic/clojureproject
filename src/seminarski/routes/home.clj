@@ -9,5 +9,4 @@
             [hiccup.page :refer :all]))
 
 (defroutes home-routes 
-  (GET "/" [] (redirect "/movies"))
-)
+  (GET "/" [] (redirect "/movies")))

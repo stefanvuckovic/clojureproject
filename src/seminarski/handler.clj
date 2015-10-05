@@ -6,10 +6,13 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [seminarski.routes.movies :refer [movie-routes]]
-            [seminarski.routes.home :refer [home-routes]]))
+            [seminarski.routes.home :refer [home-routes]]
+            [seminarski.config :as conf]))
 
 (defn init []
-  (println "starting..."))
+  (println "starting...")
+  (conf/init)
+  (println "finished initialization"))
 
 (defn destroy []
   (println "shutting down..."))
