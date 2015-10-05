@@ -27,8 +27,7 @@ Movie
 * similar movies - after applying algorithm for computation similarities between movies, store 10 most similar
 
 #3. Solution
-Application is using data from two different sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )), data is then integrated and stored
-in a MongoDB database. 
+Application is using data from two different sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )), data is then integrated and stored in a MongoDB database. 
 
 [YTS]( https://yts.to/api/ ) API provides all needed data except movie reviews data. 
 Because of that, imdb code of movies is downloaded so it can be used for searching for reviews directly on IMDB site. Data is in JSON format where maximum number of movies that can be downloaded at once is 50 so API needs to be called in iterations. 
