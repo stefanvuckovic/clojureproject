@@ -175,5 +175,5 @@ When it comes to further work, I think it would be interesting to apply some kin
 
 [7] TFIDF, http://www.tfidf.com/, date of access: october 2015.
 
-#8. Licence
+#9. Licence
 Distributed under the Eclipse Public License, the same as Clojure.
