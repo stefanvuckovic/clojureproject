@@ -79,9 +79,9 @@ Different factors were used for every movie attribute and with trial and error m
 What I did not like is that I often received recommendations for movies that had the same name for a main character, but they are not really similar. That is why another iteration was needed to try to remove personal names from analysis. As predicted, this iteration really improved recommendation results.
 
 For many movies, length of collected descriptions were often insufficient, so recommendation algorithm could not get good results. Looking at the IMDB reviews, I came to the conclusion that these reviews were very informative when it comes to particular movie and it's content. I decided to include reviews in TF-IDF algorithm. Reviews were downloaded
-directly from IMDB site, stored in database and later used in recommendation algorithm.
+directly from IMDB site, stored in database and later used in recommendation algorithm. Reviews are very specific when it comes to certain words and phrases used, so some kind of stop-word list specific for reviews is used to filter these phrasis (for example word spoiler/spoilers).
 
-At this point, traditional TF-IDF approach with computing sparse matrix (with 99% of values being zero) wasn't good enough because matrix could not fit into memory. Custom approach is then used where data is stored into maps with term - tf-idf value as key/value pairs. That means that there were adjustments and vector preparations needed to be made before computing cosine similarities.
+At this point, traditional TF-IDF approach with computing sparse matrix (with 99% of values being zero) wasn't good enough because matrix could not fit into memory. Custom approach is then used where data is stored into maps with term - tf-idf value as key/value pairs.
 
 After calculating TF-IDF weights, there is still one more step needed in order to compute recommendations. That step is actually calculating similarities between movies. For that purpose, Cosine similarity is used.
 
