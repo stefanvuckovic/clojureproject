@@ -61,9 +61,9 @@ IDF (t) = log(N/n), where N is the number of movies and n is the number of movie
 IDF value for the term is the same for every movie description so it is calculated once and used for every movie.
 When it comes to TF calculation, there are several variations; three of them are tested in the project.
 ```
-- Classic, standard formula - TF (t,d) = f(t,d)/n, where f(t,d) means frequency of a term t in a document d and n is a number of terms in a document d. [1](http://www.tfidf.com/)
+- Classic, standard formula - TF (t,d) = f(t,d)/n, where f(t,d) means frequency of a term t in a document d and n is a number of terms in a document d. [7]
 - Logarithmic - TF (t,d) = 1 + log f(t,d), where logarithm of term frequency in a document is calculated [2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf)
-- Augmented - TF (t,d) = a + (1-a) * f(t,d)/max{f(t,d) : t e d}, where term frequency is scaled by the maximum frequency of any word in document d and where a is a value between 0 and 1 and is generally set to 0.4, although some early work used the value 0.5.[2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf)
+- Augmented - TF (t,d) = a + (1-a) * f(t,d)/max{f(t,d) : t e d}, where term frequency is scaled by the maximum frequency of any word in document d and where a is a value between 0 and 1 and is generally set to 0.4, although some early work used the value 0.5.[6]
 ```
 
 After some testing, Logarithmic and Augmented variations showed better results.
@@ -153,12 +153,21 @@ The configuration file looks like this:
 * "Info" element states the options available for "movies" and "similarities" elements. If option 1 is chosen for "movies" and/or "similarities" elements, when the application starts, movies (or similarities or both) will be imported from a file populated with movie data already downloaded and/or computed. Using option 2 for "movies" element means that movies will be downloaded from API when the application starts. This should be used with caution since it is a long running process. 
 Using option 2 with the "similarities" element means that recommendation algorithm will be applied when the application starts; this is a very memory and time consuming process. Option 3 with both movies and similarities means that you want to use your local database that is already populated before. You will probably want to set option 1 for both elements on the first application launch. Data will then be imported from files to your database. After that, you should set option 3 for both elements so on every further launch data from your local database will be used.
 * Element "database-field-for-similarity" should be used to define name of the field for storing similar movies. This option is available so you can run application several times with different algorithms for calculating recommendations and you can change name of this field every time so you can later compare recommended movies from different algorithms. Otherwise you would always have similar movies in one field and would not be able to do any comparisons.
-*Element "tfidf-variation" is used for specifying the variation of a TF-IDF algorithm you want to use for computing recommendations. Available options for this element are "classic", "aug" and "log". In the testing done within this project, Augmented ("aug") and Logarithmic ("log") variations of the algorithm gave better results than the Classic ("classic") option.
-*Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus. 
+* Element "tfidf-variation" is used for specifying the variation of a TF-IDF algorithm you want to use for computing recommendations. Available options for this element are "classic", "aug" and "log". In the testing done within this project, Augmented ("aug") and Logarithmic ("log") variations of the algorithm gave better results than the Classic ("classic") option.
+* Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus. 
 5. After configuring these parameters, you can navigate to the project root directory in cmd and run "lein ring server" command. Application will start.
 
 #7. Conclusions and further work
 When it comes to further work, I think it would be interesting to apply some kind of dimension reduction algorithm on results from TF-IDF algorithm and compare results with current approach. As a next step I see applying Latent Semantic Analysis (LSA) and/or Random Indexing algorithm in order to reduce matrix dimensions, calculate similarities faster which is a big problem right now and see how these algorithms influence results.
+
+#8. Literature
+[1] Luke VanderHart, Stuart Sierra, Practical Clojure, Apress
+[2] Chas Emerick, Brian Carper, Christophe Grand, Clojure Programming, O'Reilly
+[3] Stuart Halloway, Aaron Bedra, Programming Clojure, Second edition, The Pragmatic Bookshelf
+[4] Dmitri Sotnikov, Web development with Clojure, The Pragmatic Bookshelf
+[5] Satnam Alag, Collective Intelligence in Action, Manning
+[6] Christopher D. Manning, Prabhakar Raghavan, Hinrich Schütze, An Introduction to Information Retrieval
+[7] TFIDF, http://www.tfidf.com/, date of access: october 2015.
 
 #8. Licence
 Distributed under the Eclipse Public License, the same as Clojure.
