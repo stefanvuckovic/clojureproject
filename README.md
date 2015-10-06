@@ -2,7 +2,7 @@ movierecommenderapp
 ==============
 
 #1. About project
-Topic of this project is developing a web application for movie searching and recommendation. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and then downloaded and computed data is stored in a local database.
+Topic of this project is developing a web application for movie searching and recommendation. Movie data needs to be downloaded from available sources on the web, then recommendation algorithm is applied and downloaded and computed data is stored in a local database.
 Main application development phases:
 * downloading data from available API-s or directly from web pages
 * storing data in a local database
@@ -43,7 +43,7 @@ When it comes to directors and actors data, besides name, imdb_code is downloade
 [IMDB]( http://www.imdb.com/ ) site is used for downloading movie reviews to be used for computing recommendations. Since there is no corresponding API available, data is downloaded directly from the IMDB pages. IMDB Code is used for integration of existing data and downloaded reviews.
 
 #3. Recommendation algorithm
-For recommendation purposes, content based recommendation is chosen and movie attributes were used for computing similarities. Vector Space Model approach is used for calculating similarities between movies. Vector Space Model represents text document as vectors of identifiers, in this specific case, these vectors are vectors of terms. Each dimension in a vector corresponds to a separate term. For every term in a document vector, there is a value assigned. These values (term weights) can be computed in several ways and approach that is chosen here is TF-IDF method. 
+For recommendation purposes, content based recommendation is chosen where movie attributes were used for computing similarities. Vector Space Model approach is used for calculating similarities between movies. Vector Space Model represents text document as vectors of identifiers, in this specific case, these vectors are vectors of terms. Each dimension in a vector corresponds to a separate term. For every term in a document vector, there is a value assigned. These values (term weights) can be computed in several ways and approach that is chosen here is TF-IDF method. 
 
 In first iteration, just movie description is used for computing. 
 
@@ -66,7 +66,7 @@ When it comes to TF calculation, there are several variations, three of them are
 
 Ater some testing, Logarithmic and Augmented variations showed better results.
 
-In next iteration, it was decided to include movie title, actors, directors and genres in recommendation algorithm. Also, some scaling needed to be done here, because just including title tokens, actors and other attributes with frequency 1 didn't make any sense. So, weight factors are used for these attributes and multiplied with the number of terms in a document (movie description). This allows movie attributes to contribute equally in every movie. 
+In next iteration, it was decided to include movie title, actors, directors and genres in recommendation algorithm. Also, some scaling needed to be done here, because just including title tokens, actors and other attributes with frequency 1 didn't make any sense. So, weight factors are used for these attributes and multiplied by the number of terms in a document (movie description). This allows movie attributes to contribute equally in every movie. 
 ```
 So lets say that after preprocessing is done, there are 50 terms extracted from movie description 
 (not different terms but summed frequencies of terms). If we decide that we want to use factor of 
@@ -74,16 +74,18 @@ So lets say that after preprocessing is done, there are 50 terms extracted from 
 0.05. 
 
 ```
-Different factors were used for every movie attribute and with trial and error method, I came to factors that made sense and gave solid recommendations. For actors and directors, IMDB code is used as a term and not their names to avoid that different person with the same name is treated as a same person.
+Different factors were used for every movie attribute and with trial and error method, I came to factors that made sense and gave solid recommendations. For actors and directors, IMDB code is used as a term instead of person name to avoid that different person with the same name is treated as a same person.
 
 What I did not like is that I often received recommendations for movies that have the same name for a main character, but they are not really similar. That is why another iteration was needed to try to remove personal names from analysis. Person names were removed in preprocessing phase for TF-IDF algorithm. As predicted, this iteration really improved recommendation results.
 
-For many movies, length of collected descriptions were often insufficient, so recommendation algorithm could not give good results. Looking at the IMDB reviews, I came to the conclusion that these reviews were very informative when it comes to particular movie and it's content. I decided to include reviews in TF-IDF algorithm. Reviews were downloaded
+For many movies, length of collected descriptions were insufficient for recommendation algorithm to give good results. Looking at the IMDB reviews, I came to the conclusion that these reviews were very informative when it comes to particular movie and it's content. I decided to include reviews in TF-IDF algorithm. Reviews were downloaded
 directly from IMDB site, stored in database and later used in recommendation algorithm. Reviews are very specific when it comes to certain words and phrases used, so some kind of stop-word list specific for reviews is used to filter these phrasis (for example word spoiler/spoilers).
 
 At this point, traditional TF-IDF approach with computing sparse matrix (with 99% of values being zero) wasn't good enough because matrix could not fit into memory. Custom approach is then used where data is stored into maps with term - tf-idf value as key/value pairs.
 
-After calculating TF-IDF weights, there is still one more step needed in order to compute recommendations. That step is actually calculating similarities between movies. For that purpose, Cosine similarity is used. Cosine similarity takes two vectors (of same size) and calculates similarity score. As a result from applying TF-IDF algorithm there is a vector of TF-IDF weights for every movie and these vectors are used to calculate similarity between each two movies. Then, top 10 similar movies for each movie (with highest cosine similarity score) is retrieved and stored in MongoDB database.
+In last iteration, cut off percentage is introduced. This parameter specifies percentage of most and least frequently occuring terms in a corpus that should be removed from corpus and further analysis. This is a configurable parameter whose value can be specified in a configuration file before application is started. Value "0" is also valid and in that case, no terms will be removed.
+
+After calculating TF-IDF weights, there is still one more step needed in order to compute recommendations. That step is actually calculating similarities between movies. For that purpose, Cosine similarity is used. Cosine similarity takes two vectors (of same size) and calculates similarity score. As a result from applying TF-IDF algorithm there is a vector of TF-IDF term weights for every movie and these vectors are used to calculate similarity between each two movies. Then, top 10 similar movies for each movie (with highest cosine similarity score) is retrieved and stored in MongoDB database.
 Cosine similarity computing algorithm is listed below.
 ```
 Cosine Similarity (d1, d2) =  Dot product(d1, d2) / ||d1|| * ||d2||
@@ -92,7 +94,6 @@ Dot product (d1,d2) = d1[0] * d2[0] + d1[1] * d2[1] * … * d1[n] * d2[n]
 ||d1|| = square root(d1[0]2 + d1[1]2 + ... + d1[n]2)
 ||d2|| = square root(d2[0]2 + d2[1]2 + ... + d2[n]2)
 ```
-
 
 #4. Implementation
 Application is written in Clojure programming language. 
@@ -160,7 +161,7 @@ Using option 2 with similarities element mean that recommendation algorithm will
 5. After configuring these parameters, you can navigate to the project root directory in cmd and run "lein ring server" command. Application will start.
 
 #7. Conclusions and further work
-When it comes to further work, I think it would be interesting to apply dimension reduction on results from TF-IDF algorithm and compare results with current approach. As a next step I see applying Latent Semantic Analysis (LSA) and/or Random Indexing algorithm in order to reduce matrix dimensions, calculate similarities faster which is a big problem right now and see how these algorithms influence results.
+When it comes to further work, I think it would be interesting to apply some kind of dimension reduction algorithm on results from TF-IDF algorithm and compare results with current approach. As a next step I see applying Latent Semantic Analysis (LSA) and/or Random Indexing algorithm in order to reduce matrix dimensions, calculate similarities faster which is a big problem right now and see how these algorithms influence results.
 
 #8. Licence
 Distributed under the Eclipse Public License, the same as Clojure.
