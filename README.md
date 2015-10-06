@@ -61,9 +61,9 @@ IDF (t) = log(N/n), where N is the number of movies and n is the number of movie
 IDF value for the term is the same for every movie description so it is calculated once and used for every movie.
 When it comes to TF calculation, there are several variations; three of them are tested in the project.
 ```
-- Classic, standard formula - TF (t,d) = f(t,d)/n, where f(t,d) means frequency of a term t in a document d and n is a number of terms in a document d. ([1](http://www.tfidf.com/))
-- Logarithmic - TF (t,d) = 1 + log f(t,d), where logarithm of term frequency in a document is calculated ([2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf))
-- Augmented - TF (t,d) = a + (1-a) * f(t,d)/max{f(t,d) : t e d}, where term frequency is scaled by the maximum frequency of any word in document d and where a is a value between 0 and 1 and is generally set to 0.4, although some early work used the value 0.5.([2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf))
+- Classic, standard formula - TF (t,d) = f(t,d)/n, where f(t,d) means frequency of a term t in a document d and n is a number of terms in a document d. [1](http://www.tfidf.com/)
+- Logarithmic - TF (t,d) = 1 + log f(t,d), where logarithm of term frequency in a document is calculated [2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf)
+- Augmented - TF (t,d) = a + (1-a) * f(t,d)/max{f(t,d) : t e d}, where term frequency is scaled by the maximum frequency of any word in document d and where a is a value between 0 and 1 and is generally set to 0.4, although some early work used the value 0.5.[2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf)
 ```
 
 After some testing, Logarithmic and Augmented variations showed better results.
@@ -80,7 +80,7 @@ Different weights were tested for each of the aforementioned movie attributes, a
 
 It was observed that the recommendation algorithm tend to recommend movies that have the same name for a main character, even though they are not really similar to the selected movie. That is why another iteration was needed to try to remove personal names from the analysis. Personal names were removed in the preprocessing phase that preceded the computation of  TF-IDF values. As predicted, this iteration really improved recommendation results.
 
-For many movies, length of collected descriptions was insufficient for recommendation algorithm to give good results. Therefore, an additional source of movie descriptions was needed. It was found in IMDB reviews of movies which proved to be very informative when it comes to particular movie and its content. Hence, reviews were used for extending the movie vectors. Reviews were downloaded directly from IMDB site, stored in the database and later used in the recommendation algorithm. Reviews are very specific when it comes to certain words and phrases used, so some kind of stop-word list specific for reviews was used to filter those phrases (for example, word spoiler/spoilers).
+For many movies, length of collected descriptions was insufficient for recommendation algorithm to give good results. Therefore, an additional source of movie descriptions was needed. It was found in IMDB reviews of movies, which proved to be very informative when it comes to particular movie and its content. Hence, reviews were used for extending the movie vectors. Reviews were downloaded directly from IMDB site, stored in the database and later used in the recommendation algorithm. Reviews are very specific when it comes to certain words and phrases used, so some kind of a stop-word list specific for reviews was used to filter those phrases (for example, word spoiler/spoilers).
 
 At this point, traditional TF-IDF approach with computing sparse matrix (with 99% of values being zero) was not applicable because the matrix could not fit into memory. Custom approach is then used where data is stored into maps with term - tf-idf value as key/value pairs.
 
