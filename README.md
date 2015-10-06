@@ -62,7 +62,7 @@ IDF value for the term is the same for every movie description so it is calculat
 When it comes to TF calculation, there are several variations; three of them are tested in the project.
 ```
 - Classic, standard formula - TF (t,d) = f(t,d)/n, where f(t,d) means frequency of a term t in a document d and n is a number of terms in a document d. [7]
-- Logarithmic - TF (t,d) = 1 + log f(t,d), where logarithm of term frequency in a document is calculated [2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf)
+- Logarithmic - TF (t,d) = 1 + log f(t,d), where logarithm of term frequency in a document is calculated [6]
 - Augmented - TF (t,d) = a + (1-a) * f(t,d)/max{f(t,d) : t e d}, where term frequency is scaled by the maximum frequency of any word in document d and where a is a value between 0 and 1 and is generally set to 0.4, although some early work used the value 0.5.[6]
 ```
 
@@ -162,11 +162,17 @@ When it comes to further work, I think it would be interesting to apply some kin
 
 #8. Literature
 [1] Luke VanderHart, Stuart Sierra, Practical Clojure, Apress
+
 [2] Chas Emerick, Brian Carper, Christophe Grand, Clojure Programming, O'Reilly
+
 [3] Stuart Halloway, Aaron Bedra, Programming Clojure, Second edition, The Pragmatic Bookshelf
+
 [4] Dmitri Sotnikov, Web development with Clojure, The Pragmatic Bookshelf
+
 [5] Satnam Alag, Collective Intelligence in Action, Manning
+
 [6] Christopher D. Manning, Prabhakar Raghavan, Hinrich Schütze, An Introduction to Information Retrieval
+
 [7] TFIDF, http://www.tfidf.com/, date of access: october 2015.
 
 #8. Licence
