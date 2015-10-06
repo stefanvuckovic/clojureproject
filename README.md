@@ -1,4 +1,4 @@
-movierecommenderapp
+Content based movie recommendation
 ==============
 
 #1. About project
@@ -29,7 +29,7 @@ Movie
 Application is using data from two different sources ([YTS]( https://yts.to/api/ ) [IMDB]( http://www.imdb.com/ )), and after downloading, data is integrated and stored in a MongoDB database. 
 
 [YTS]( https://yts.to/api/ ) API provides all needed data except movie reviews. 
-Because of that, movie imdb code is downloaded so it can be used for searching for reviews directly on IMDB site. Data is in JSON format where maximum number of movies that can be downloaded at once is 50 so API needs to be called in iterations. Example of one API call:
+Because of that, movie IMDB code is downloaded so it can be used for searching for reviews directly on IMDB site. Data is in JSON format where maximum number of movies that can be downloaded at once is 50 so API needs to be called in iterations. Example of one API call:
 ```
 https://yts.to/api/v2/list_movies.json?limit=50&page=10
 ```
@@ -38,7 +38,7 @@ Example of one API call to the Movie details API:
 ```
 https://yts.to/api/v2/movie_details.json?movie_id=10
 ```
-When it comes to directors and actors data, besides name, imdb_code is downloaded for every person so it could be uniquely identified. That is important because actor and director data is used for computing recommendations.
+When it comes to directors and actors data, besides name, IMDB code is downloaded for every person so it could be uniquely identified. That is important because actor and director data is used for computing recommendations.
 
 [IMDB]( http://www.imdb.com/ ) site is used for downloading movie reviews to be used for computing recommendations. Since there is no corresponding API available, data is downloaded directly from the IMDB pages. IMDB Code is used for integration of existing data and downloaded reviews.
 
