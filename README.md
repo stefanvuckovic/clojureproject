@@ -43,7 +43,7 @@ When it comes to directors and actors data, besides name, imdb_code is downloade
 [IMDB]( http://www.imdb.com/ ) site is used for downloading movie reviews to be used for computing recommendations. Since there is no corresponding API available, data is downloaded directly from the IMDB pages. IMDB Code is used for integration of existing data and downloaded reviews.
 
 #3. Recommendation algorithm
-For recommendation purposes, movie attributes were used, so content based recommendation is implemented. Vector Space Model approach is used for calculating similarities between movies. Vector Space Model represents text document as vectors of identifiers, in this specific case, these vectors are vectors of terms. Each dimension in a vector corresponds to a separate term. For every term in a document vector, there is a value assigned. These values (term weights) can be computed in several ways and approach that is chosen here is TF-IDF method. 
+For recommendation purposes, content based recommendation is chosen and movie attributes were used for computing similarities. Vector Space Model approach is used for calculating similarities between movies. Vector Space Model represents text document as vectors of identifiers, in this specific case, these vectors are vectors of terms. Each dimension in a vector corresponds to a separate term. For every term in a document vector, there is a value assigned. These values (term weights) can be computed in several ways and approach that is chosen here is TF-IDF method. 
 
 In first iteration, just movie description is used for computing. 
 
@@ -52,7 +52,7 @@ There is preprocessing that needs to be done on description before computing TF-
 * tokenize description
 * remove stop-words from the list of tokens - stop words are the words that occurs the most often but they do not carry any semantic information so they are removed
 * stemming is applied for every token - in order to reduce tokens to their root, base form and avoid that word derivations (for example plural) are treated as different words. For this purpose, Porter stemming algorithm is used.
-After these steps, TF-IDF can be calculated for every term inside movie description. There are three variations of TF-IDF algorithm used and tested in this project. IDF is always computed with same formula:
+After these steps, TF-IDF can be calculated for every term inside movie description. There are three variations of TF-IDF algorithm used and tested in this project. IDF is always computed with the same formula:
 ```
 IDF (t) = log(N/n), where N is the number of movies and n is the number of movies where term t occurs.
 ```
@@ -74,16 +74,24 @@ So lets say that after preprocessing is done, there are 50 terms extracted from 
 0.05. 
 
 ```
-Different factors were used for every movie attribute and with trial and error method, I came to factors that made sense and gave solid recommendations. For actors and directors, IMDB code is used as a term and not their names to avoid that different person with same name is treated as a same person.
+Different factors were used for every movie attribute and with trial and error method, I came to factors that made sense and gave solid recommendations. For actors and directors, IMDB code is used as a term and not their names to avoid that different person with the same name is treated as a same person.
 
-What I did not like is that I often received recommendations for movies that had the same name for a main character, but they are not really similar. That is why another iteration was needed to try to remove personal names from analysis. As predicted, this iteration really improved recommendation results.
+What I did not like is that I often received recommendations for movies that have the same name for a main character, but they are not really similar. That is why another iteration was needed to try to remove personal names from analysis. Person names were removed in preprocessing phase for TF-IDF algorithm. As predicted, this iteration really improved recommendation results.
 
-For many movies, length of collected descriptions were often insufficient, so recommendation algorithm could not get good results. Looking at the IMDB reviews, I came to the conclusion that these reviews were very informative when it comes to particular movie and it's content. I decided to include reviews in TF-IDF algorithm. Reviews were downloaded
+For many movies, length of collected descriptions were often insufficient, so recommendation algorithm could not give good results. Looking at the IMDB reviews, I came to the conclusion that these reviews were very informative when it comes to particular movie and it's content. I decided to include reviews in TF-IDF algorithm. Reviews were downloaded
 directly from IMDB site, stored in database and later used in recommendation algorithm. Reviews are very specific when it comes to certain words and phrases used, so some kind of stop-word list specific for reviews is used to filter these phrasis (for example word spoiler/spoilers).
 
 At this point, traditional TF-IDF approach with computing sparse matrix (with 99% of values being zero) wasn't good enough because matrix could not fit into memory. Custom approach is then used where data is stored into maps with term - tf-idf value as key/value pairs.
 
-After calculating TF-IDF weights, there is still one more step needed in order to compute recommendations. That step is actually calculating similarities between movies. For that purpose, Cosine similarity is used.
+After calculating TF-IDF weights, there is still one more step needed in order to compute recommendations. That step is actually calculating similarities between movies. For that purpose, Cosine similarity is used. Cosine similarity takes two vectors (of same size) and calculates similarity score. As a result from applying TF-IDF algorithm there is a vector of TF-IDF weights for every movie and these vectors are used to calculate similarity between each two movies. Then, top 10 similar movies for each movie (with highest cosine similarity score) is retrieved and stored in MongoDB database.
+Cosine similarity computing algorithm is listed below.
+```
+Cosine Similarity (d1, d2) =  Dot product(d1, d2) / ||d1|| * ||d2||
+
+Dot product (d1,d2) = d1[0] * d2[0] + d1[1] * d2[1] * … * d1[n] * d2[n]
+||d1|| = square root(d1[0]2 + d1[1]2 + ... + d1[n]2)
+||d2|| = square root(d2[0]2 + d2[1]2 + ... + d2[n]2)
+```
 
 
 #4. Implementation
