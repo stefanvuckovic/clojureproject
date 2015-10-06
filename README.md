@@ -3,6 +3,7 @@ Content based movie recommendation
 
 #1. About the project
 The objective of this project is to develop a Web application for movie search and recommendation. Movie data needs to be downloaded from available sources on the Web, stored in a local database, and then recommendation algorithm is applied and computed data is also stored in a local repository.
+
 Main application development phases:
 * downloading data from available API-s or directly from Web pages
 * storing data in a local database
@@ -52,12 +53,13 @@ Movie descriptions need to be preprocessed before computing TF-IDF:
 * tokenize description
 * remove stop-words from the list of tokens - stop words are the words that occur the most often but they do not carry any semantic information; so, they are removed
 * stemming is applied to every token - in order to reduce tokens to their root, base form and avoid that word derivations (for example plural) are treated as different words. For this purpose, Porter stemming algorithm is used.
+
 After these steps, TF-IDF is calculated for every term of a movie description. Three variations of TF-IDF algorithm have been used and tested in this project. IDF is always computed using the same formula:
 ```
 IDF (t) = log(N/n), where N is the number of movies and n is the number of movies where term t occurs.
 ```
 IDF value for the term is the same for every movie description so it is calculated once and used for every movie.
-When it comes to TF calculation, there are several variations, three of them are tested here.
+When it comes to TF calculation, there are several variations; three of them are tested in the project.
 ```
 - Classic, standard formula - TF (t,d) = f(t,d)/n, where f(t,d) means frequency of a term t in a document d and n is a number of terms in a document d. ([1](http://www.tfidf.com/))
 - Logarithmic - TF (t,d) = 1 + log f(t,d), where logarithm of term frequency in a document is calculated ([2](http://nlp.stanford.edu/IR-book/pdf/irbookonlinereading.pdf))
