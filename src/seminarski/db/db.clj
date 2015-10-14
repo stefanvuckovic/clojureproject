@@ -1,4 +1,4 @@
-(ns seminarski.db
+(ns seminarski.db.db
   (:require [monger.core :as mo]
             [monger.collection :as mcol]
             [monger.query :as mquery]

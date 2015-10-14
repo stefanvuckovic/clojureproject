@@ -2,7 +2,7 @@
   (:require [ring.util.response :refer [redirect]]
             [compojure.core :refer :all]
             [seminarski.views.layout :as layout]
-            [seminarski.controller :as controller]
+            [seminarski.controller.controller :as controller]
             [clojure.string :as cs]
             [hiccup.form :refer :all]
             [hiccup.element :refer :all]

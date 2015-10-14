@@ -1,5 +1,5 @@
-(ns seminarski.parser
-  (:require [seminarski.getdatafromurl :as gd]
+(ns seminarski.data.parser
+  (:require [seminarski.data.getdatafromurl :as gd]
             [cheshire.core :refer :all :as ch]))
 
 (defn get-url-listmoviesapi [] 

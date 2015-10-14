@@ -1,4 +1,4 @@
-(ns seminarski.getdatafromurl
+(ns seminarski.data.getdatafromurl
   (:require [clj-http.client :as client]
             [org.httpkit.client :as http]))
 

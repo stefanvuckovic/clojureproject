@@ -1,7 +1,6 @@
-(ns seminarski.controller
-  (:require [seminarski.parser :as parser]
-            [seminarski.db :as db]
-            [seminarski.calculations :as calc]
+(ns seminarski.controller.controller
+  (:require [seminarski.db.db :as db]
+            [seminarski.recommendation.calculations :as calc]
             [monger.operators :refer :all]))
 
 

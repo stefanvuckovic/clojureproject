@@ -1,10 +1,10 @@
-(ns seminarski.tfidf
+(ns seminarski.recommendation.tfidf
   (:require [opennlp.nlp :as nlp]
             [clj-fuzzy.stemmers :as stemmer]
             [clojure.string :as string]
             [clojure.set :as cljset]
-            [seminarski.scraping :as scrape]
-            [seminarski.settings :as settings]))
+            [seminarski.data.scraping :as scrape]
+            [seminarski.config.settings :as settings]))
 
 (def tokenizer (nlp/make-tokenizer "models/en-token.bin"))
 (def name-finder (nlp/make-name-finder "models/en-ner-person.bin"))
@@ -23,7 +23,7 @@
 
 (defn filter-person-names [tokens]
   (remove 
-    (set (seminarski.tfidf/name-finder tokens)) 
+    (set (name-finder tokens)) 
     tokens))
 
 (defn process-single-document [doc]
@@ -46,12 +46,14 @@
     (/ frequence scale)))
 
 (defn calculate-tf-log [frequence scale]
-  (let [frequence (or frequence 0)]
-    (+ 1 (Math/log10 frequence))))
+  (if frequence
+    (+ 1 (Math/log10 frequence))
+    0))
 
 (defn calculate-tf-normalize-by-max [frequence scale]
-  (let [frequence (or frequence 0)]
-    (+ 0.4 (* 0.6 (/ frequence scale)))))
+  (if frequence
+    (+ 0.4 (* 0.6 (/ frequence scale)))
+    0))
 
 (defn calculate-idf [all-docs term]
   (Math/log10
@@ -89,20 +91,20 @@
    (apply (partial merge-with +) maps))
 
  
-  (defn create-vector-for-tfidf [movie]
+ (defn create-vector-for-tfidf [movie]
    (let [description (process-single-document (:description movie))
-         reviews 
+        reviews 
            (let [revs (:reviews movie)]
              (if (empty? revs)
                {}
-               (process-single-document (scrape/remove-stop-words (string/join " " (take 2 (:reviews movie)))))))
-         base (merge-vectors description reviews)
-         sum (reduce + (vals base))
-         actors (get-weighted-attributes sum (get-cast-list (:actors movie)) 0.05)
-         directors (get-weighted-attributes sum (get-cast-list (:directors movie)) 0.05)
-         title (get-weighted-attributes sum (process-single-document (:title movie)) 0.03)
-         genres (get-weighted-attributes sum (partial-process (:genres movie)) 0.05)
-         final-vector (merge-vectors base actors directors title genres)]
+               (process-single-document (scrape/remove-stop-words (string/join " " (take 5 (:reviews movie)))))))
+        base (merge-vectors description reviews)
+        sum (reduce + (vals base))
+        actors (get-weighted-attributes sum (get-cast-list (:actors movie)) 0.05)
+        directors (get-weighted-attributes sum (get-cast-list (:directors movie)) 0.05)
+        title (get-weighted-attributes sum (process-single-document (:title movie)) 0.03)
+        genres (get-weighted-attributes sum (partial-process (:genres movie)) 0.05)
+        final-vector (merge-vectors base actors directors title genres)]
      {:_id (:_id movie) :tokens final-vector}))
 
 (defn get-preprocessed-data [data]
@@ -126,11 +128,11 @@
     (tfidf-for-movie tf-fn scale-final vocabulary movie)))
  
 
-(defn tfidf-for-all-without-cutoff "Calculate tfidf values for all movies" [movies vocabulary tfidf-fn]
-  (let [all-terms (get-all-terms vocabulary)
+(defn tfidf-for-all-without-cutoff "Calculate tfidf values for all movies" [movies tfidf-fn]
+  (let [all-terms (get-all-terms movies)
         idfs (get-all-idfs movies all-terms)
         tfidf-map (map (partial tfidf-fn idfs) movies)]
-    (spit (str "conf/tfidf" settings/tfidf-variation ".edn") (prn-str tfidf-map))
+    (spit (str "conf/test/tfidf" settings/tfidf-variation ".edn") (prn-str tfidf-map))
     tfidf-map))
 
 (defn remove-words [col words-to-remove]
@@ -143,40 +145,40 @@
                                [(get map-to-sort key2) key2])))
          map-to-sort))
 
-(defn tfidf-for-all-with-cutoff "Calculate tfidf values for all movies" [movies vocabulary tfidf-fn]
-  (let [all-terms (sort-fn (get-all-terms-with-frequencies vocabulary))
-        removal-percentage (Math/ceil (* settings/cutoff (count all-terms)))
+(defn tfidf-for-all-with-cutoff "Calculate tfidf values for all movies" [movies tfidf-fn cutoff]
+  (let [all-terms (sort-fn (get-all-terms-with-frequencies movies))
+        removal-percentage (Math/ceil (* cutoff (count all-terms)))
         words-to-remove (set (into (keys (take removal-percentage all-terms)) (keys (take-last removal-percentage all-terms))))
         voc (cljset/difference (set (keys all-terms)) words-to-remove)
         movies-final (map #(update-in % [:tokens] remove-words words-to-remove) movies)
         idfs (get-all-idfs movies-final voc)
         tfidf-map (map (partial tfidf-fn idfs) movies-final)]
-    (spit (str "conf/idf" settings/cutoff ".edn") (prn-str idfs))
-    (spit (str "conf/tfidf" settings/tfidf-variation ".edn") (prn-str tfidf-map))
+    (spit (str "conf/test/idf" cutoff ".edn") (prn-str idfs))
+    (spit (str "conf/test/tfidf" settings/tfidf-variation ".edn") (prn-str tfidf-map))
     tfidf-map))
 
 (defmulti tfidf-for-all 
-  (fn [movies vocabulary tfidf-fn cutoff]
+  (fn [movies tfidf-fn cutoff]
     cutoff))
 
 (defmethod tfidf-for-all 0.0
-  [movies vocabulary tfidf-fn cutoff] (tfidf-for-all-without-cutoff movies vocabulary tfidf-fn))
+  [movies tfidf-fn cutoff] (tfidf-for-all-without-cutoff movies tfidf-fn))
 
 (defmethod tfidf-for-all :default
-  [movies vocabulary tfidf-fn cutoff] (tfidf-for-all-with-cutoff movies vocabulary tfidf-fn))
+  [movies tfidf-fn cutoff] (tfidf-for-all-with-cutoff movies tfidf-fn cutoff))
 
 (defmulti calculate-tfidf-for-all 
-  (fn [movies vocabulary variation]
+  (fn [movies variation cutoff]
     variation))
 
 (defmethod calculate-tfidf-for-all :classic
-  [movies vocabulary variation] (tfidf-for-all movies vocabulary (partial tfidf-scale-by + calculate-tf-classic) settings/cutoff))
+  [movies variation cutoff] (tfidf-for-all movies (partial tfidf-scale-by + calculate-tf-classic) cutoff))
 
 (defmethod calculate-tfidf-for-all :aug
-  [movies vocabulary variation] (tfidf-for-all movies vocabulary (partial tfidf-scale-by max calculate-tf-normalize-by-max) settings/cutoff))
+  [movies variation cutoff] (tfidf-for-all movies (partial tfidf-scale-by max calculate-tf-normalize-by-max) cutoff))
 
 (defmethod calculate-tfidf-for-all :log
-  [movies vocabulary variation] (tfidf-for-all movies vocabulary (partial tfidf-for-movie calculate-tf-log 0) settings/cutoff))
+  [movies variation cutoff] (tfidf-for-all movies (partial tfidf-for-movie calculate-tf-log 0) cutoff))
 
 
 

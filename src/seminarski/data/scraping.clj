@@ -1,4 +1,4 @@
-(ns seminarski.scraping
+(ns seminarski.data.scraping
   (:require [net.cgrand.enlive-html :as html]
             [clojure.string :as string]))
 

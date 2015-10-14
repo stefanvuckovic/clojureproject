@@ -1,11 +1,10 @@
-(ns seminarski.config
+(ns seminarski.config.config
   (:require [cheshire.core :refer :all :as ch]
-            [seminarski.db :as db]
-            [seminarski.parser :as parser]
-            [seminarski.calculations :as calc]
-            [seminarski.settings :as settings]
-            [seminarski.scraping :as scraper]
-            [seminarski.parser :as parser]))
+            [seminarski.db.db :as db]
+            [seminarski.data.parser :as parser]
+            [seminarski.recommendation.calculations :as calc]
+            [seminarski.config.settings :as settings]
+            [seminarski.data.scraping :as scraper]))
 
 (defn get-movies-backup-file []
   "conf/data.edn")
@@ -56,10 +55,6 @@
   (catch Exception e
     (.printStackTrace e))))
 
-(defn get-reviews-from-imdb2 [] 
-  (doseq [movie (get-all-data ["_id" "imdb_code"])]
-    (save-reviews movie (scraper/parse-reviews (:imdb_code movie)))))
-
 (defn get-reviews-from-imdb [] 
   (dorun (pmap #(doseq [movie %]
     (save-reviews movie (scraper/parse-reviews (:imdb_code movie))))
@@ -71,9 +66,6 @@
 
 (defn calculate-recommendations []
   (calc/calculate-similarities (get-all-data-projection ["_id" "description" "genres" "title" "actors" "directors" "reviews"])))
-
-(defn calculate-recommendations2 []
-  (calc/calculate-similarities (db/get-data-pagination "movies" 1 50)))
 
 (defn backup-data [data file]
   (spit file (prn-str data)))

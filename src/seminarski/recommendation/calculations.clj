@@ -1,9 +1,9 @@
-(ns seminarski.calculations
-  (:require [seminarski.tfidf :as tfidf]
-            [seminarski.similarity :as sim]
-            [seminarski.db :as db]
+(ns seminarski.recommendation.calculations
+  (:require [seminarski.recommendation.tfidf :as tfidf]
+            [seminarski.recommendation.similarity :as sim]
+            [seminarski.db.db :as db]
             [clojure.set :as set]
-            [seminarski.settings :as settings]))
+            [seminarski.config.settings :as settings]))
 
 (defn get-db-field-for-similarities []
   "similar")
@@ -41,13 +41,6 @@
   (catch Exception e
      (.printStackTrace e))))
 
-(defn cosine-similarity-for-all2 "Calculate similarities for every two movies" 
-  ([movies]
-    (cosine-similarity-for-all2 movies movies))
-  ([movies movie-chunk]
-    (map #(get-similarities-for-movie movies %) movie-chunk)))
-
-
 (defn cosine-similarity-for-all "Calculate similarities for every two movies" 
   ([movies]
     (cosine-similarity-for-all movies movies))
@@ -58,28 +51,23 @@
 (defn cosine-similarity-for-all-parallel "Calculate similarities for every two movies" [movies]
   (dorun (pmap #(cosine-similarity-for-all movies %) (partition-all 65 movies))))
 
-(defn cosine-similarity-for-all-parallel2 "Calculate similarities for every two movies" [movies]
-  (pmap #(cosine-similarity-for-all2 movies %) (partition-all 65 movies)))
 
-
-(defn calculate-cosine-similarities [calculation-fn processed-movies processed-vocabulary]
+(defn calculate-cosine-similarities [calculation-fn processed-data]
   (calculation-fn
-    (tfidf/calculate-tfidf-for-all processed-movies processed-vocabulary (keyword settings/tfidf-variation))))
+    (tfidf/calculate-tfidf-for-all processed-data (keyword settings/tfidf-variation) settings/cutoff)))
 
 
-(defn calculate-similarities 
-  ([movies] 
-    (let [processed-data (tfidf/get-preprocessed-data movies)]
-      (calculate-cosine-similarities cosine-similarity-for-all-parallel processed-data processed-data)))
-  ([movies vocabulary]
-    (calculate-cosine-similarities cosine-similarity-for-all-parallel 
-                                   (tfidf/get-preprocessed-data movies) 
-                                   (tfidf/get-preprocessed-data vocabulary))))
+(defn calculate-similarities [movies] 
+  (calculate-cosine-similarities cosine-similarity-for-all-parallel (tfidf/get-preprocessed-data movies)))
 
 
 (defn tfidf []
-  (let [processed-data (tfidf/get-preprocessed-data (db/get-data "movies"))]
-    (tfidf/calculate-tfidf-for-all processed-data processed-data)))
+  (try
+  (let [processed-data (tfidf/get-preprocessed-data (db/get-data-pagination "movies" 1 3 nil nil))]
+    (tfidf/calculate-tfidf-for-all processed-data :classic 0.0))
+  (catch Exception e
+      (do
+        (.printStackTrace e)))))
 
 (defn test-preprocess []
   (tfidf/get-preprocessed-data (db/get-data-pagination "movies" 1 10 nil nil)))

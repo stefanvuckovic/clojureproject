@@ -1,8 +1,8 @@
 {
   "info" : { "import" : 1, "download/calculate" : 2, "use-existing-data" : 3 },
   "movies" : 3,
-  "similarities" : 2,
-  "database-field-for-similarity" : "similar-log",
-  "tfidf-variation" : "log",
+  "similarities" : 3,
+  "database-field-for-similarity" : "similar-max",
+  "tfidf-variation" : "aug",
   "cutoff" : 0.02
 }

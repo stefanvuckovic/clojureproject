@@ -1,12 +1,12 @@
 (ns seminarski.routes.movies
   (:require [compojure.core :refer :all]
             [seminarski.views.layout :as layout]
-            [seminarski.controller :as controller]
+            [seminarski.controller.controller :as controller]
             [clojure.string :as cs]
             [hiccup.form :refer :all]
             [hiccup.element :refer :all]
             [hiccup.page :refer :all]
-            [seminarski.settings :as settings]))
+            [seminarski.config.settings :as settings]))
 
 
 (defn get-base-template [] 

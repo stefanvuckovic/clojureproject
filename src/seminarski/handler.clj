@@ -7,7 +7,7 @@
             [compojure.route :as route]
             [seminarski.routes.movies :refer [movie-routes]]
             [seminarski.routes.home :refer [home-routes]]
-            [seminarski.config :as conf]))
+            [seminarski.config.config :as conf]))
 
 (defn init []
   (println "starting...")

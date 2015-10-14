@@ -1,4 +1,4 @@
-(ns seminarski.similarity)
+(ns seminarski.recommendation.similarity)
 
 (defn get-cosine-similarity-values [val1 val2]
   {:dot (* val1 val2), :mag1 (Math/pow val1 2), :mag2 (Math/pow val2 2)})
