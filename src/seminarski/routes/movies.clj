@@ -16,7 +16,9 @@
         (link-to {:class "navbar-brand"} "/movies" "Home")]
       [:div#navbar.navbar-collapse.collapse
         [:div.navbar-form.navbar-right
-          (text-field {:class "form-control" :placeholder "Search..."} :search)]]]])
+          (text-field 
+           {:class "form-control" :placeholder "Search..."} 
+           :search)]]]])
 
 (defn display-start-page []
   (layout/template
@@ -37,41 +39,26 @@
     (list
       [:ul.pager
       (if (> page 1)
-        [:li (link-to {:align "left", :onclick (str "getMovies(" (- page 1) (if-not (nil? title) (str ",\"" title "\"") "") ")")} "javascript:void(0);" "PREVIOUS")])
+        [:li 
+         (link-to 
+          {:align "left", 
+           :onclick (str "getMovies(" 
+                         (- page 1) 
+                         (if-not (nil? title) 
+                          (str ",\"" title "\"") 
+                          "") 
+                         ")")} 
+          "javascript:void(0);" "PREVIOUS")])
       " "
-      [:li (link-to {:align "left", :onclick (str "getMovies(" (+ page 1) (if-not (nil? title) (str ",\"" title "\"") "") ")")} "javascript:void(0);" "NEXT")]])))
-
-
-(defn display-movies2 [page title]
-  (let [page (Integer/parseInt page)
-        movies (controller/get-movies-from-db page 12 title nil)]
-    (layout/to-html
-      (for [mv movies]
-          [:div.col-md-4
-           [:div.panel.panel-default
-            [:div.panel-heading
-             [:h4
-              [:i.fa.fa-fw.fa-check]
-              (:title mv)]]
-            [:div.panel-body
-             [:div.row
-             [:div.col-md-4 
-              [:p "Year: "]]
-             [:div.col-md-8
-              [:p (:year mv)]]]
-             [:div.row
-             [:div.col-md-4 
-              [:p "Rating: "]]
-             [:div.col-md-8
-              [:p (:imdb_rating mv)]]]
-             [:div.row
-             [:div.col-md-4 
-              [:p "Genre: "]]
-             [:div.col-md-8
-              [:p (apply str (interpose ", " (:genres mv)))]]]
-             (link-to {:class "btn btn-sm btn-primary"} (str "/movie/" (:_id mv)) "Details")]]])
-      [:br]
-      [:div (get-paginator page title)])))
+      [:li (link-to 
+            {:align "left", 
+             :onclick (str "getMovies(" 
+                           (+ page 1) 
+                           (if-not (nil? title) 
+                            (str ",\"" title "\"") 
+                            "") 
+                           ")")} 
+            "javascript:void(0);" "NEXT")]])))
 
 (defn display-movies [page title]
   (let [page (Integer/parseInt page)
@@ -104,7 +91,9 @@
               [:p "Genre: "]]
              [:div.col-md-8
               [:p (apply str (interpose ", " (:genres mv)))]]]
-             (link-to {:class "btn btn-sm btn-primary"} (str "/movie/" (:_id mv)) "Details")]]])])
+             (link-to {:class "btn btn-sm btn-primary"} 
+                      (str "/movie/" (:_id mv)) 
+                      "Details")]]])])
       [:br]
       [:div (get-paginator page title)])))
 
@@ -113,7 +102,9 @@
 
 
 (defn show-similar-movies [movie] 
-  (let [grouped-movies (partition-all 3 ((keyword settings/similarity-db-field) movie))]
+  (let [grouped-movies (partition-all 
+                        3 
+                        ((keyword settings/similarity-db-field) movie))]
     (for [three-movies grouped-movies]
       [:div.row
       (for [mv three-movies]
@@ -135,7 +126,9 @@
                   [:p "Genre: "]]
                 [:div.col-md-8
                   [:p (apply str (interpose ", " (:genres sm)))]]]
-              (link-to {:class "btn btn-sm btn-primary"} (str "/movie/" (:_id sm)) "Details")]]]))])))
+              (link-to {:class "btn btn-sm btn-primary"} 
+                       (str "/movie/" (:_id sm)) 
+                       "Details")]]]))])))
 
 
 (defn display-movie-details [id]

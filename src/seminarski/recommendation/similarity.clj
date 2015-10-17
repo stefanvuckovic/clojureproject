@@ -15,10 +15,11 @@
      :mag2 (+ mag2v1 mag2v2)}))
 
 (defn calculate-parameters-for-cosine-similarity [v1 v2]
-  (reduce sum (map get-cosine-similarity-values v1 v2)))
+  (reduce sum 
+          (map get-cosine-similarity-values v1 v2)))
 
 (defn calculate-cosine-similarity [v1 v2]
-  (let [ {:keys[dot mag1 mag2]} (calculate-parameters-for-cosine-similarity v1 v2)]
+  (let [{:keys[dot mag1 mag2]} (calculate-parameters-for-cosine-similarity v1 v2)]
     (if (or (= mag1 0.0) (= mag2 0.0))
       0
       (/ dot (* (Math/sqrt mag1) (Math/sqrt mag2))))))

@@ -32,27 +32,35 @@
         (get-in mv json-tag)))))
 
 (defn get-movies-from-page [page] 
-  (do
-    (println (str (get-url-listmoviesapi) page))
-    (gd/get-data (get-url-listmoviesapi) {"limit" (get-limit-listmoviesapi), "page" page})))
+  (gd/get-data 
+   (get-url-listmoviesapi) 
+   {"limit" (get-limit-listmoviesapi), 
+    "page" page}))
 
 
 (defn get-movie-details [movie]
-  (do
-    (println (str (get-url-moviedetailsapi) (:id movie)))
-    (gd/get-data (get-url-moviedetailsapi) {"movie_id" (:id movie), "with_cast" "true"})))
+  (gd/get-data 
+   (get-url-moviedetailsapi) 
+   {"movie_id" (:id movie), "with_cast" "true"}))
 
 (defn get-movie-reviews-from-api [movie-id]
-  (gd/get-data (get-url-moviereviewsapi) {"movie_id" movie-id}))
+  (gd/get-data 
+   (get-url-moviereviewsapi) 
+   {"movie_id" movie-id}))
 
 (defn get-parsed-movie-reviews [movie-id]
   (let [reviews (get-movie-reviews-from-api movie-id)]
     (if (= reviews nil)
       (throw (Exception. "Error"))
-      (json-parse (get-movie-reviews-from-api movie-id) (get-reviews-json-tag)))))
+      (json-parse 
+       (get-movie-reviews-from-api movie-id) 
+       (get-reviews-json-tag)))))
 
 (defn get-movie-reviews [movie-id]
-  (reduce #(conj %1 (:review_text %2)) [] (get-parsed-movie-reviews movie-id))) 
+  (reduce 
+   #(conj %1 (:review_text %2)) 
+     [] 
+     (get-parsed-movie-reviews movie-id))) 
 
 (defn get-moviecast-data [cast]
   (vec (doall (map #(select-keys % [:name :imdb_code]) cast))))
@@ -75,82 +83,28 @@
   (loop [mv movies mvfrompage []]
     (if (empty? mv)
       mvfrompage
-      (let [mvfp (json-parse (get-movie-details (first mv)) (get-movie-details-json-tag))]
-        (if-not (nil? mvfp)
-          (recur (rest mv) (conj mvfrompage (get-parsed-movie mvfp)))
-          (recur (rest mv) mvfrompage))))))
+      (if-let [mvfp 
+               (json-parse 
+                (get-movie-details (first mv)) 
+                (get-movie-details-json-tag))]
+        (recur (rest mv) (conj 
+                          mvfrompage 
+                          (get-parsed-movie mvfp)))
+        (recur (rest mv) mvfrompage)))))
 
 (defn get-movies []
   (loop [page 1 movies []]
-    (let [moviesfrompage (json-parse (get-movies-from-page page) (get-movies-json-tag))]
-      (if-not (nil? moviesfrompage)
-        (if (empty? moviesfrompage)
-          (do 
-            (println "EMPTY")
-            movies)
-          (do 
-            (println moviesfrompage)
-          (recur (inc page) (into movies (get-processed-movies moviesfrompage)))))
-        (recur (inc page) movies)))))
-
-(defn get-processed-movies-parallel [movies]
-  (loop [mv movies mvfrompage []]
-    (if (empty? mv)
-      mvfrompage    
-        (recur (rest mv) (conj mvfrompage 
-                               (do 
-                                 (Thread/sleep 200) 
-                                 (future 
-                                   (get-parsed-movie 
-                                     (json-parse 
-                                       (get-movie-details (first mv)) (get-movie-details-json-tag))))))))))
-  
-(defn get-movies-parallel []
-  (loop [page 1 movies [] first-time true]
-    (let [moviesfrompage (do (if (not first-time) (Thread/sleep 300)) (json-parse (get-movies-from-page page) (get-movies-json-tag)))]
+    (if-let [moviesfrompage 
+             (json-parse 
+              (get-movies-from-page page) 
+              (get-movies-json-tag))]
       (if (empty? moviesfrompage)
-        (do
-          (println "EMPTY")
-          movies)
-        (do
-          
-          (recur (inc page) (into movies (get-processed-movies-parallel moviesfrompage)) false))))))
-  
-(defn deref-movies [movies]
-  (vec (doall (map deref movies))))
-
-(defn get-processed-movies-map [movies]
-  (doall (map #(get-parsed-movie (json-parse (get-movie-details %) (get-movie-details-json-tag))) movies)))
-
-(defn get-processed-movies-pmap [movies]
-  (doall (pmap #(get-parsed-movie (json-parse (get-movie-details %) (get-movie-details-json-tag))) movies)))
-
-(defn get-movies-map []
-  (loop [page 1 movies []]
-    (let [moviesfrompage (json-parse (get-movies-from-page page) (get-movies-json-tag))]
-      (if-not (nil? moviesfrompage)
-        (if (empty? moviesfrompage)
-          (do 
-            (println "EMPTY")
-            movies)
-          (do
-          
-          (recur (inc page) (into movies (get-processed-movies-map moviesfrompage)))))
-        (recur (inc page) movies)))))
-
-(defn get-movies-pmap []
-  (loop [page 1 movies []]
-    (let [moviesfrompage (json-parse (get-movies-from-page page) (get-movies-json-tag))]
-      (if-not (nil? moviesfrompage)
-        (if (empty? moviesfrompage)
-          (do 
-            (println "EMPTY")
-            movies)
-          (do
-          
-          (recur (inc page) (into movies (get-processed-movies-pmap moviesfrompage)))))
-        (recur (inc page) movies)))))
-
+        movies
+        (recur (inc page) 
+               (into movies 
+                     (get-processed-movies 
+                      moviesfrompage))))
+      (recur (inc page) movies))))
 
 
 

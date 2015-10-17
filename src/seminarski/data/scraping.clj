@@ -15,12 +15,19 @@
 (defn parse-reviews [movie-id] 
   (try
     (remove check-if-real-review 
-      (into [] (drop-last 
-                 (reduce #(conj %1 
-                            (string/replace (html/text %2) #"\n" " ")) 
-                 [] (html/select (html/html-resource (java.net.URL. 
-                                                       (get-review-url movie-id))) [:div#tn15content :p])))))
-    (catch Exception e
-      (.printStackTrace e))))
+      (into [] 
+            (drop-last 
+             (reduce 
+              #(conj %1 
+                     (string/replace 
+                      (html/text %2) #"\n" " ")) 
+              [] 
+              (html/select 
+               (html/html-resource 
+                (java.net.URL. 
+                 (get-review-url movie-id))) 
+               [:div#tn15content :p])))))
+     (catch Exception e
+       (.printStackTrace e))))
 
 

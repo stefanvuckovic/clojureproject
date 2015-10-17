@@ -25,9 +25,12 @@
   (:cutoff config))
 
 (defn set-global-settings [config]
-  (alter-var-root #'settings/similarity-db-field (constantly (get-db-field-similarity config)))
-  (alter-var-root #'settings/tfidf-variation (constantly (get-tfidf-variation config)))
-  (alter-var-root #'settings/cutoff (constantly (double (get-cutoff config))))
+  (alter-var-root #'settings/similarity-db-field 
+                  (constantly (get-db-field-similarity config)))
+  (alter-var-root #'settings/tfidf-variation 
+                  (constantly (get-tfidf-variation config)))
+  (alter-var-root #'settings/cutoff 
+                  (constantly (double (get-cutoff config))))
   (println settings/cutoff)
   nil)
 
@@ -56,16 +59,22 @@
     (.printStackTrace e))))
 
 (defn get-reviews-from-imdb [] 
-  (dorun (pmap #(doseq [movie %]
-    (save-reviews movie (scraper/parse-reviews (:imdb_code movie))))
-           (partition-all 200 (get-all-data-projection ["_id" "imdb_code"])))))
+  (dorun 
+   (pmap 
+    #(doseq [movie %]
+       (save-reviews movie 
+        (scraper/parse-reviews (:imdb_code movie))))
+     (partition-all 200 
+       (get-all-data-projection ["_id" "imdb_code"])))))
 
 (defn get-reviews-from-api []
   (doseq [movie (get-all-data-projection ["_id"])]
     (save-reviews movie (parser/get-movie-reviews (:_id movie)))))
 
 (defn calculate-recommendations []
-  (calc/calculate-similarities (get-all-data-projection ["_id" "description" "genres" "title" "actors" "directors" "reviews"])))
+  (calc/calculate-similarities 
+   (get-all-data-projection 
+    ["_id" "description" "genres" "title" "actors" "directors" "reviews"])))
 
 (defn backup-data [data file]
   (spit file (prn-str data)))
@@ -73,7 +82,8 @@
 (defn save-similarities-in-file []
   (let [movies (get-all-data)
         filtered-movies (map #(select-keys % [:_id :similar]) movies)]
-    (backup-data filtered-movies (get-similarities-backup-file))))
+    (backup-data filtered-movies 
+     (get-similarities-backup-file))))
     
 (defn get-json-from-file [file]
   (ch/parse-string (slurp file) true))
@@ -83,15 +93,21 @@
 
 (defn save-recommendations [movie]
   (try
-      (db/update "movies" (:_id movie) {:similar-max (:similar movie)})
+    (db/update "movies" 
+               (:_id movie) 
+               {:similar-max (:similar movie)})
   (catch Exception e
-     (.printStackTrace e))))
+    (.printStackTrace e))))
 
 (defn import-movies []
-  (insert-movies (get-data-from-file (get-movies-backup-file))))
+  (insert-movies 
+   (get-data-from-file 
+    (get-movies-backup-file))))
 
 (defn import-similarities []
-  (let [movies (get-data-from-file (get-similarities-backup-file))]
+  (let [movies 
+        (get-data-from-file 
+         (get-similarities-backup-file))]
     (doseq [movie movies]
       (save-recommendations movie))))
 
