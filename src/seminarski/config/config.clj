@@ -10,7 +10,7 @@
   "conf/data.edn")
 
 (defn get-similarities-backup-file []
-  "conf/similarity.edn")
+  (str "conf/" settings/similarity-db-field ".edn"))
 
 (defn get-config-file []
   "conf/config.json")
@@ -80,9 +80,8 @@
   (spit file (prn-str data)))
 
 (defn save-similarities-in-file []
-  (let [movies (get-all-data)
-        filtered-movies (map #(select-keys % [:_id :similar]) movies)]
-    (backup-data filtered-movies 
+  (let [movies (get-all-data-projection ["_id" settings/similarity-db-field])]
+    (backup-data movies 
      (get-similarities-backup-file))))
     
 (defn get-json-from-file [file]
@@ -95,7 +94,8 @@
   (try
     (db/update "movies" 
                (:_id movie) 
-               {:similar-max (:similar movie)})
+               {(keyword settings/similarity-db-field) 
+                 ((keyword settings/similarity-db-field) movie)})
   (catch Exception e
     (.printStackTrace e))))
 

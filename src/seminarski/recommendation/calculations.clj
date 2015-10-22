@@ -97,21 +97,9 @@
 (defn calculate-similarities 
   "Takes preprocessed data and specifies function
   for calculating cosine similarity (parallel or
-  parallel or sequential"
+  sequential"
   [movies] 
   (calculate-cosine-similarities 
    cosine-similarity-for-all-parallel 
    (tfidf/get-preprocessed-data movies)))
-
-
-(defn tfidf []
-  (try
-  (let [processed-data (tfidf/get-preprocessed-data (db/get-data-pagination "movies" 1 3 nil nil))]
-    (tfidf/calculate-tfidf-for-all processed-data :classic 0.0))
-  (catch Exception e
-      (do
-        (.printStackTrace e)))))
-
-(defn test-preprocess []
-  (tfidf/get-preprocessed-data (db/get-data-pagination "movies" 1 10 nil nil)))
  

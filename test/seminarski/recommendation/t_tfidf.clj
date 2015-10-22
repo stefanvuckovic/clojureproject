@@ -34,9 +34,9 @@
   (calculate-tf-log nil 10) => 0)
 
 (fact "augmentative tf formula test"
-  (calculate-tf-normalize-by-max 10 20) => 0.7
-  (calculate-tf-normalize-by-max 1 10) => 0.46
-  (calculate-tf-normalize-by-max nil 10) => 0)
+  (calculate-tf-aug 10 20) => 0.7
+  (calculate-tf-aug  1 10) => 0.46
+  (calculate-tf-aug  nil 10) => 0)
 
 (fact "idf calculation test"
   (calculate-idf 
