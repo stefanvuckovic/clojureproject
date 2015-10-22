@@ -139,7 +139,7 @@ Pagination is implemented so movies don't need to be loaded in memory at once.
 1. Install Leiningen - instructions can be found at http://leiningen.org/
 2. Install MongoDB - instructions can be found at http://docs.mongodb.org/manual/installation/
 3. In cmd, navigate to the directory you want to store this project in and run: git clone https://github.com/stefanvuckovic/clojureproject.git
-4. You need to set up application configuration which is stored in conf/config.json file.
+4. You need to set up application configuration which is stored in "conf/config.json" file.
 The configuration file looks like this:
 ```
 {
@@ -159,7 +159,7 @@ Using option 2 with the "similarities" element means that recommendation algorit
 * Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus. 
 5. After configuring these parameters, you can navigate to the project root directory and run "lein ring server" command. Application will start.
 
-If you want to run tests, navigate to the project root directory and run "lein midje".
+For running tests, navigate to the project root directory and run "lein midje".
 
 #7. Conclusions and further work
 When it comes to further work, I think it would be interesting to apply some kind of dimension reduction algorithm on results from TF-IDF algorithm and compare results with current approach. As a next step I see applying Latent Semantic Analysis (LSA) and/or Random Indexing algorithm in order to reduce matrix dimensions, calculate similarities faster which is a big problem right now and see how these algorithms influence results.
