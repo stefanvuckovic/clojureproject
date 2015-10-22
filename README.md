@@ -156,8 +156,7 @@ The configuration file looks like this:
 Using option 2 with the "similarities" element means that recommendation algorithm will be applied when the application starts; this is a very memory and time consuming process. Option 3 with both movies and similarities means that you want to use your local database that is already populated before. You will probably want to set option 1 for both elements on the first application launch. Data will then be imported from files to your database. After that, you should set option 3 for both elements so on every further launch data from your local database will be used.
 * Element "database-field-for-similarity" should be used to define name of the field for storing similar movies. This option is available so you can run application several times with different algorithms for calculating recommendations and you can change name of this field every time so you can later compare recommended movies from different algorithms. Otherwise you would always have similar movies in one field and would not be able to do any comparisons.
 * Element "tfidf-variation" is used for specifying the variation of a TF-IDF algorithm you want to use for computing recommendations. Available options for this element are "classic", "aug" and "log". In the testing done within this project, Augmented ("aug") and Logarithmic ("log") variations of the algorithm gave better results than the Classic ("classic") option.
-* Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus. 
-
+* Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus.
 5. After configuring these parameters, you can navigate to the project root directory and run "lein ring server" command. Application will start.
 
 For running tests, navigate to the project root directory and run "lein midje".
