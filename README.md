@@ -139,7 +139,7 @@ Pagination is implemented so movies don't need to be loaded in memory at once.
 1. Install Leiningen - instructions can be found at http://leiningen.org/
 2. Install MongoDB - instructions can be found at http://docs.mongodb.org/manual/installation/
 3. In cmd, navigate to the directory you want to store this project in and run: git clone https://github.com/stefanvuckovic/clojureproject.git
-4. You need to set up application configuration which is stored in "conf/config.json" file. The configuration file looks like this:
+4. You need to set up application configuration which is stored in "conf/config.json" file. The configuration file looks like this: 
 ```
 {
   "info" : { "import" : 1, "download/calculate" : 2, "use-existing-data" : 3 },
@@ -157,7 +157,7 @@ Using option 2 with the "similarities" element means that recommendation algorit
 * Element "tfidf-variation" is used for specifying the variation of a TF-IDF algorithm you want to use for computing recommendations. Available options for this element are "classic", "aug" and "log". In the testing done within this project, Augmented ("aug") and Logarithmic ("log") variations of the algorithm gave better results than the Classic ("classic") option.
 * Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus.
 
-5. After configuring these parameters, you can navigate to the project root directory and run "lein ring server" command. Application will start.
+   5 . After configuring these parameters, you can navigate to the project root directory and run "lein ring server" command. Application will start.
 
 For running tests, navigate to the project root directory and run "lein midje".
 
