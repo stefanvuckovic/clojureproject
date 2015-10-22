@@ -118,7 +118,9 @@ MongoDB is a document oriented database that provides high performance and flexi
 
 7. [Leiningen] (http://leiningen.org/) - used as a build tool.
 
-8. Other libraries used for different tasks like HTTP requests, tokenizing text and so on.
+8. [Midje] (https://github.com/marick/Midje) - used for testing.
+
+9. Other libraries used for different tasks like HTTP requests, tokenizing text and so on.
 
 #5. Use Case
 Application provides user interface for movie search and displaying movie details as well as recommendations.
@@ -137,7 +139,7 @@ Pagination is implemented so movies don't need to be loaded in memory at once.
 1. Install Leiningen - instructions can be found at http://leiningen.org/
 2. Install MongoDB - instructions can be found at http://docs.mongodb.org/manual/installation/
 3. In cmd, navigate to the directory you want to store this project in and run: git clone https://github.com/stefanvuckovic/clojureproject.git
-4. You need to set up application configuration which is stored in conf/config.json
+4. You need to set up application configuration which is stored in conf/config.json file.
 The configuration file looks like this:
 ```
 {
@@ -155,7 +157,9 @@ Using option 2 with the "similarities" element means that recommendation algorit
 * Element "database-field-for-similarity" should be used to define name of the field for storing similar movies. This option is available so you can run application several times with different algorithms for calculating recommendations and you can change name of this field every time so you can later compare recommended movies from different algorithms. Otherwise you would always have similar movies in one field and would not be able to do any comparisons.
 * Element "tfidf-variation" is used for specifying the variation of a TF-IDF algorithm you want to use for computing recommendations. Available options for this element are "classic", "aug" and "log". In the testing done within this project, Augmented ("aug") and Logarithmic ("log") variations of the algorithm gave better results than the Classic ("classic") option.
 * Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus. 
-5. After configuring these parameters, you can navigate to the project root directory in cmd and run "lein ring server" command. Application will start.
+5. After configuring these parameters, you can navigate to the project root directory and run "lein ring server" command. Application will start.
+
+If you want to run tests, navigate to the project root directory and run "lein midje".
 
 #7. Conclusions and further work
 When it comes to further work, I think it would be interesting to apply some kind of dimension reduction algorithm on results from TF-IDF algorithm and compare results with current approach. As a next step I see applying Latent Semantic Analysis (LSA) and/or Random Indexing algorithm in order to reduce matrix dimensions, calculate similarities faster which is a big problem right now and see how these algorithms influence results.
