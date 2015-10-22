@@ -157,7 +157,7 @@ Using option 2 with the "similarities" element means that recommendation algorit
 * Element "tfidf-variation" is used for specifying the variation of a TF-IDF algorithm you want to use for computing recommendations. Available options for this element are "classic", "aug" and "log". In the testing done within this project, Augmented ("aug") and Logarithmic ("log") variations of the algorithm gave better results than the Classic ("classic") option.
 * Element "cutoff" is used for specifying percentage of the most and least used words that will be removed from the corpus.
 
-   5 . After configuring these parameters, you can navigate to the project root directory and run "lein ring server" command. Application will start.
+  5 . After configuring these parameters, you can navigate to the project root directory and run "lein ring server" command. Application will start.
 
 For running tests, navigate to the project root directory and run "lein midje".
 
